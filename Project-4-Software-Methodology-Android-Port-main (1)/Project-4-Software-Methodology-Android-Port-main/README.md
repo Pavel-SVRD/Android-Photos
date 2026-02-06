@@ -1,2 +1,2 @@
-# Project-4-Software-Methodology-Android-Port
-An android port of our photos app for software methodology.
+# Photos Application Android
+A Java and Android based application that allows for storage and categorization of photos on a mobile device. Co created by Pavel Sverdlov and Jess Ahedo.
