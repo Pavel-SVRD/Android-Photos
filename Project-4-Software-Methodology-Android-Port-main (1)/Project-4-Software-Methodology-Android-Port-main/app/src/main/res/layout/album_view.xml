@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- TOP SECTION (Album Name + Date Range) -->
+    <TextView
+        android:id="@+id/albumNameLabel"
+        android:text="Album"
+        android:textSize="24sp"
+        android:layout_marginBottom="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/dateRangeLabel"
+        android:text="Date Range"
+        android:textSize="16sp"
+        android:layout_marginBottom="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <!-- PHOTO LIST -->
+    <ListView
+        android:id="@+id/photoListView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <!-- BOTTOM BUTTONS -->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:paddingBottom="15dp">
+
+        <Button
+            android:text="Add Photo"
+            android:onClick="handleAddPhoto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:text="Remove Photo"
+            android:onClick="handleRemovePhoto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:text="Caption"
+            android:onClick="handleCaptionPhoto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:text="Display Photo"
+            android:onClick="handleDisplayPhoto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:text="Copy Photo"
+            android:onClick="handleCopyPhoto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:text="Move Photo"
+            android:onClick="handleMovePhoto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <!-- Spacer -->
+        <Space
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:text="Back"
+            android:onClick="handleBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="photos.controller.SearchController">
+    <top>
+        <VBox spacing="10.0">
+            <padding>
+                <Insets top="15.0" right="15.0" bottom="10.0" left="15.0"/>
+            </padding>
+            
+            <Label text="Search Photos">
+                <font>
+                    <Font name="System Bold" size="20.0"/>
+                </font>
+            </Label>
+            
+            <Separator/>
+            
+            <VBox spacing="15.0">
+                <VBox.margin>
+                    <Insets top="10.0"/>
+                </VBox.margin>
+                
+                <RadioButton fx:id="dateSearchRadio" text="Search by Date Range"/>
+                
+                <HBox spacing="10.0" alignment="CENTER_LEFT">
+                    <HBox.margin>
+                        <Insets left="25.0"/>
+                    </HBox.margin>
+                    <Label text="Start Date (MM/DD/YYYY):"/>
+                    <TextField fx:id="startDateField" promptText="MM/DD/YYYY" prefWidth="150.0"/>
+                    <Label text="End Date (MM/DD/YYYY):"/>
+                    <TextField fx:id="endDateField" promptText="MM/DD/YYYY" prefWidth="150.0"/>
+                </HBox>
+                
+                <RadioButton fx:id="tagSearchRadio" text="Search by Tags"/>
+                
+                <VBox spacing="10.0">
+                    <VBox.margin>
+                        <Insets left="25.0"/>
+                    </VBox.margin>
+                    
+                    <HBox spacing="5.0" alignment="CENTER_LEFT">
+                        <RadioButton fx:id="singleTagRadio" text="Single Tag" selected="true"/>
+                        <RadioButton fx:id="andRadio" text="AND"/>
+                        <RadioButton fx:id="orRadio" text="OR"/>
+                    </HBox>
+                    
+                    <HBox spacing="10.0" alignment="CENTER_LEFT">
+                        <Label text="Tag Type 1:"/>
+                        <ComboBox fx:id="tagType1Combo" prefWidth="120.0"/>
+                        <Label text="Value:"/>
+                        <TextField fx:id="tagValue1Field" prefWidth="150.0"/>
+                    </HBox>
+                    
+                    <HBox spacing="10.0" alignment="CENTER_LEFT">
+                        <Label text="Tag Type 2:"/>
+                        <ComboBox fx:id="tagType2Combo" prefWidth="120.0"/>
+                        <Label text="Value:"/>
+                        <TextField fx:id="tagValue2Field" prefWidth="150.0"/>
+                    </HBox>
+                </VBox>
+                
+                <HBox spacing="10.0" alignment="CENTER_LEFT">
+                    <Button text="Search" onAction="#handleSearch" defaultButton="true"/>
+                    <Button text="Create Album from Results" onAction="#handleCreateAlbum"/>
+                </HBox>
+            </VBox>
+        </VBox>
+    </top>
+    
+    <center>
+        <VBox spacing="10.0">
+            <padding>
+                <Insets top="10.0" right="15.0" bottom="10.0" left="15.0"/>
+            </padding>
+            
+            <Label fx:id="resultsLabel" text="Search Results:">
+                <font>
+                    <Font name="System Bold" size="14.0"/>
+                </font>
+            </Label>
+            
+            <ScrollPane fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                <TilePane fx:id="resultsTilePane" hgap="15.0" vgap="15.0" prefColumns="4"/>
+            </ScrollPane>
+        </VBox>
+    </center>
+    
+    <bottom>
+        <HBox spacing="10.0" alignment="CENTER_RIGHT">
+            <padding>
+                <Insets top="10.0" right="15.0" bottom="15.0" left="15.0"/>
+            </padding>
+            
+            <Button text="Back" onAction="#handleBack"/>
+        </HBox>
+    </bottom>
+</BorderPane>

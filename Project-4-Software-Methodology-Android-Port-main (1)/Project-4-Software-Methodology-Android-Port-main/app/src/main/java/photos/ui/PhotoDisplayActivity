@@ -1,0 +1,171 @@
+package photos.ui;
+
+import android.app.AlertDialog;
+import android.net.Uri;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.*;
+import androidx.appcompat.app.AppCompatActivity;
+
+import photos.R;
+import photos.model.*;
+
+import java.io.File;
+import java.util.List;
+
+public class PhotoDisplayActivity extends AppCompatActivity {
+
+    private ImageView photoImageView;
+    private TextView captionLabel;
+    private TextView dateLabel;
+    private ListView tagListView;
+
+    private Photo currentPhoto;
+    private Album currentAlbum;
+    private int currentIndex;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_photo_display);
+
+        // Get album and photo index from intent
+        String albumName = getIntent().getStringExtra("albumName");
+        currentIndex = getIntent().getIntExtra("photoIndex", 0);
+        
+        currentAlbum = DataManager.getInstance().getAlbumByName(albumName);
+        if (currentAlbum == null || currentAlbum.getPhotos().isEmpty()) {
+            Toast.makeText(this, "Album not found", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+        
+        currentPhoto = currentAlbum.getPhotos().get(currentIndex);
+
+        // Bind UI elements
+        photoImageView = findViewById(R.id.photoImageView);
+        captionLabel = findViewById(R.id.captionLabel);
+        dateLabel = findViewById(R.id.dateLabel);
+        tagListView = findViewById(R.id.tagListView);
+
+        // Buttons
+        findViewById(R.id.buttonAddTag).setOnClickListener(v -> handleAddTag());
+        findViewById(R.id.buttonDeleteTag).setOnClickListener(v -> handleDeleteTag());
+        findViewById(R.id.buttonNext).setOnClickListener(v -> handleNext());
+        findViewById(R.id.buttonPrevious).setOnClickListener(v -> handlePrevious());
+        findViewById(R.id.buttonBack).setOnClickListener(v -> handleBack());
+
+        displayPhoto();
+    }
+
+    private void displayPhoto() {
+        File file = new File(currentPhoto.getFilePath());
+        if (file.exists()) {
+            photoImageView.setImageURI(Uri.fromFile(file));
+        }
+
+        captionLabel.setText(
+                currentPhoto.getCaption().isEmpty() ?
+                        "No caption" : currentPhoto.getCaption()
+        );
+
+        dateLabel.setText(currentPhoto.getDateString());
+
+        ArrayAdapter<Tag> adapter =
+                new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,
+                        currentPhoto.getTags());
+        tagListView.setAdapter(adapter);
+    }
+
+    private void handleAddTag() {
+        final EditText inputType = new EditText(this);
+        final EditText inputValue = new EditText(this);
+
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setPadding(50, 20, 50, 20);
+        
+        TextView typeLabel = new TextView(this);
+        typeLabel.setText("Tag Type (person or location):");
+        layout.addView(typeLabel);
+        layout.addView(inputType);
+        
+        TextView valueLabel = new TextView(this);
+        valueLabel.setText("Tag Value:");
+        valueLabel.setPadding(0, 20, 0, 0);
+        layout.addView(valueLabel);
+        layout.addView(inputValue);
+
+        new AlertDialog.Builder(this)
+                .setTitle("Add Tag")
+                .setView(layout)
+                .setPositiveButton("Add", (dialog, which) -> {
+                    String type = inputType.getText().toString().trim().toLowerCase();
+                    String value = inputValue.getText().toString().trim();
+
+                    if (!type.equals("person") && !type.equals("location")) {
+                        showAlert("Error", "Tag type must be 'person' or 'location'");
+                        return;
+                    }
+
+                    if (!type.isEmpty() && !value.isEmpty()) {
+                        Tag tag = new Tag(type, value);
+
+                        if (currentPhoto.addTag(tag)) {
+                            DataManager.getInstance().saveAll();
+                            displayPhoto();
+                            Toast.makeText(this, "Tag added", Toast.LENGTH_SHORT).show();
+                        } else {
+                            showAlert("Error", "Tag already exists");
+                        }
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private void handleDeleteTag() {
+        int selectedPos = tagListView.getCheckedItemPosition();
+        if (selectedPos < 0) {
+            showAlert("Error", "Select a tag to delete");
+            return;
+        }
+
+        Tag selected = currentPhoto.getTags().get(selectedPos);
+        currentPhoto.removeTag(selected);
+        DataManager.getInstance().saveAll();
+        displayPhoto();
+        Toast.makeText(this, "Tag deleted", Toast.LENGTH_SHORT).show();
+    }
+
+    private void handlePrevious() {
+        List<Photo> photos = currentAlbum.getPhotos();
+        if (photos.isEmpty()) return;
+
+        currentIndex = (currentIndex - 1 + photos.size()) % photos.size();
+        currentPhoto = photos.get(currentIndex);
+        displayPhoto();
+    }
+
+    private void handleNext() {
+        List<Photo> photos = currentAlbum.getPhotos();
+        if (photos.isEmpty()) return;
+
+        currentIndex = (currentIndex + 1) % photos.size();
+        currentPhoto = photos.get(currentIndex);
+        displayPhoto();
+    }
+
+    private void handleBack() {
+        DataManager.getInstance().saveAll();
+        finish();
+    }
+
+    private void showAlert(String title, String message) {
+        new AlertDialog.Builder(this)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton("OK", null)
+                .show();
+    }
+}
